@@ -51,7 +51,7 @@ You are given **242 math problems** from AIMO, AMC, AIME, PUMaC, and HMMT compet
 ### Problem Content
 - `statement` (string) - The math problem statement
 - `domain` (string) - Subject area (Algebra, Geometry, Number Theory, Combinatorics, Probability)
-- `correct_answer` (string) - The verified correct answer
+- `correct_answer` (string) - The verified correct answer (e.g., "4", "64π", "123")
 - `tier` (int) - Difficulty level (1 = easiest, 4 = hardest)
 - `cot` (string) - 5-step Chain-of-Thought reasoning
 
