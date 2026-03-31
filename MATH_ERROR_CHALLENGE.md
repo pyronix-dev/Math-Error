@@ -43,22 +43,14 @@ You are given **242 math problems** from AIMO, AMC, AIME, PUMaC, and HMMT compet
 
 ## Data Fields
 
-### Identifiers
 - `statement_id` (int) - Unique row identifier (0 to N-1)
-- `source_id` (string) - Problem ID (e.g., "AMC001", "AIME003")
-- `source` (string) - Competition and year (e.g., "AMC 12A 2020")
-
-### Problem Content
 - `statement` (string) - The math problem statement
 - `domain` (string) - Subject area (Algebra, Geometry, Number Theory, Combinatorics, Probability)
 - `correct_answer` (string) - The verified correct answer (e.g., "4", "64π", "123")
-- `tier` (int) - Difficulty level (1 = easiest, 4 = hardest)
-- `cot` (string) - 5-step Chain-of-Thought reasoning
-
-### Targets (What You Predict)
 - `has_error` (int) - **Target 1**: Whether CoT contains an error (0 = correct, 1 = error)
 - `error_step` (int) - **Target 2**: Which step has the error (-1 = none, 1-5 = step number)
 - `error_type` (string) - Type of error (wrong_setup, wrong_formula, calculation_error, logic_error, wrong_answer, none)
+- `cot` (string) - 5-step Chain-of-Thought reasoning
 
 ---
 
@@ -69,7 +61,6 @@ You are given **242 math problems** from AIMO, AMC, AIME, PUMaC, and HMMT compet
 **Error CoT**: 42 (17.4%)
 **Base Problems**: 200 unique
 **Domains**: 5 (Algebra, Geometry, Number Theory, Combinatorics, Probability)
-**Difficulty Tiers**: 4 (Tier 1 = AMC basic, Tier 4 = Olympiad)
 
 ### Error Step Distribution
 - Step 1: 11 (26.2%)
