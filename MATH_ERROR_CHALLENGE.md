@@ -80,13 +80,13 @@ You are given **242 math problems** from AIMO, AMC, AIME, PUMaC, and HMMT compet
 
 ## File Structure
 
-The dataset is organized into three primary CSV files. All files are UTF-8 encoded.
+The dataset consists of one main CSV file. All files are UTF-8 encoded.
 
-### train.csv (145 rows, 60%)
-Contains the training dataset with all labels for model training and validation.
+### data.csv (242 rows)
+The complete dataset with all labels. Participants should split this into training and test sets.
 
 **Columns:**
-- `statement_id` - Unique row identifier
+- `statement_id` - Unique row identifier (0 to 241)
 - `statement` - The math problem statement
 - `domain` - Subject area (Algebra, Geometry, Number Theory, Combinatorics, Probability)
 - `correct_answer` - The verified correct answer
@@ -95,27 +95,61 @@ Contains the training dataset with all labels for model training and validation.
 - `error_type` - **Label**: Type of error (wrong_setup, wrong_formula, calculation_error, logic_error, wrong_answer, none)
 - `cot` - 5-step Chain-of-Thought reasoning
 
-### test.csv (97 rows, 40%)
-Contains the problem statements and CoT steps **without** the error labels. Use this to generate your predictions.
+---
 
-**Columns:**
-- `statement_id` - Unique row identifier
-- `statement` - The math problem statement
-- `domain` - Subject area
-- `correct_answer` - The verified correct answer
-- `cot` - 5-step Chain-of-Thought reasoning
+## Data Preparation
 
-**Note:** The labels (`has_error`, `error_step`, `error_type`) are hidden for the test set.
+To create the train/test split and sample submission file, use the following Python code:
 
-### sample_submission.csv (97 rows)
-A template showing the required format for your final submission.
+```python
+import pandas as pd
+from sklearn.model_selection import train_test_split
 
-**Columns:**
-- `statement_id` - Unique row identifier (must match test.csv)
-- `has_error` - Your prediction: 0 (correct) or 1 (error)
-- `error_step` - Your prediction: -1 (no error) or 1-5 (step with error)
+# Load the full dataset
+df = pd.read_csv('data.csv')
 
-**Example:**
+# Split 60/40 with stratification to maintain error distribution
+train_df, test_df = train_test_split(
+    df, 
+    test_size=0.4, 
+    random_state=42, 
+    stratify=df['has_error']
+)
+
+# Save training set (with labels)
+train_df.to_csv('train.csv', index=False)
+
+# Save test set (without labels)
+test_df_no_labels = test_df.drop(columns=['has_error', 'error_step', 'error_type'])
+test_df_no_labels.to_csv('test.csv', index=False)
+
+# Generate sample submission template
+sample_submission = pd.DataFrame({
+    'statement_id': test_df['statement_id'],
+    'has_error': 0,  # Placeholder predictions
+    'error_step': -1
+})
+sample_submission.to_csv('sample_submission.csv', index=False)
+
+print(f"✓ Created train.csv: {len(train_df)} rows ({len(train_df)/len(df)*100:.1f}%)")
+print(f"✓ Created test.csv: {len(test_df)} rows ({len(test_df)/len(df)*100:.1f}%)")
+print(f"✓ Created sample_submission.csv: {len(sample_submission)} rows")
+```
+
+### Output Files
+
+After running the script, you will have:
+
+| File | Rows | Description |
+|------|------|-------------|
+| `train.csv` | 145 (60%) | Training data **with labels** |
+| `test.csv` | 97 (40%) | Test data **without labels** |
+| `sample_submission.csv` | 97 | Submission template |
+
+### Submission Format
+
+Your final submission should match the format of `sample_submission.csv`:
+
 ```csv
 statement_id,has_error,error_step
 42,0,-1
@@ -123,6 +157,11 @@ statement_id,has_error,error_step
 89,1,2
 ...
 ```
+
+**Requirements:**
+- `statement_id`: Must match the IDs in test.csv
+- `has_error`: Binary prediction (0 = correct, 1 = error)
+- `error_step`: Step prediction (-1 = no error, 1-5 = step with error)
 
 ---
 
